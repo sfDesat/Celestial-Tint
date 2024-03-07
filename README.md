@@ -1,5 +1,5 @@
 # Celestial Tint
-This mod adds a beautiful view when in orbit. This includes four different orbit locations.  
+This mod adds a beautiful view when in orbit. This currently includes four different orbit locations.  
 
 ### Compatibilities
 - **[Compatible]** Highly recommended mod: **[SpaceShipDoor](https://thunderstore.io/c/lethal-company/p/Wolf11221/SpaceShipDoor/)**
@@ -16,7 +16,7 @@ This mod adds a beautiful view when in orbit. This includes four different orbit
 - Add support for Eclipsed weather
 - Add a meteorshower event
 - Add more presets
-- Add support for custom suns (color and type)
+- Add support for custom suns (color, type and amount)
 - Add support for other moons in orbit
 - Change/Add the ship in space (rocket/booster attachment)
 # 
