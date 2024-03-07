@@ -10,12 +10,10 @@ This mod adds a beautiful view when in orbit. This includes four different orbit
 - The planets are not completely lore accurate. This is not achievable right now.
   
 ### Planned features:
-- Add modded moon compatibility (planetPrefab name)
 - Add support for Eclipsed weather
 - Add a meteorshower event
-- Add support for on-planet weather to show in orbit
-- Refine Company preset
-- Update Description
+- Add more presets
+- Add support for custom suns (color and type)
 - Add support for other moons in orbit?
 # 
   
