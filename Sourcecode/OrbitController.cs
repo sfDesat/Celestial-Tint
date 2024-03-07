@@ -9,8 +9,9 @@ public class OrbitController : MonoBehaviour
     public Vector3 sunRotateVector = new Vector3(0.002f, 0, 0);
     public Vector3 moonRotateVector = new Vector3(0.002f, 0, 0);
     public Vector3 planetRotateVector = new Vector3(0, 0, -0.002f);
-    public Vector3 planetStartVector = new Vector3(0, 0, -10);
+    public Vector3 planetRotateStartVector = new Vector3(0, 0, -10);
     [Space]
+    public Vector3 planetPosition;
     public float orbitHeight = 80000f;
     public float planetRadius = 6378100f;
     public Cubemap planetTexture;
@@ -45,14 +46,21 @@ public class OrbitController : MonoBehaviour
                 {
                     Debug.Log("[OrbitController] Physically Based Sky successfully obtained");
 
+                    // Apply starting rotation
                     sun.transform.Rotate(Random.Range(sunStartMin, sunStartMax), 0, 0, Space.Self);
+                    sky.planetRotation.value = planetRotateStartVector;
 
-                    sky.planetRotation.value = planetStartVector;
+                    // Apply tints
                     sky.groundTint.value = planetTint;
                     sky.airTint.value = airTint;
 
+                    // Apply textures
                     sky.groundColorTexture.value = planetTexture;
                     sky.groundEmissionTexture.value = planetTexture;
+
+                    // Apply Orbit
+                    sky.planetCenterPosition.value = new(0, -(planetRadius + orbitHeight), 0);
+                    planetPosition = sky.planetCenterPosition.value;
                 }
                 else
                 {
@@ -80,6 +88,7 @@ public class OrbitController : MonoBehaviour
     private void SpaceSimulation()
     {
         sky.planetRotation.value += planetRotateVector;
+        sky.planetCenterPosition.value = planetPosition;
 
         if (!movePlanetOnly)
         {
