@@ -13,6 +13,7 @@ This mod adds a beautiful view when in orbit. This includes four different orbit
 - Add modded moon compatibility (planetPrefab name)
 - Add support for Eclipsed weather
 - Add a meteorshower event
+- Add support for on-planet weather to show in orbit
 - Refine Company preset
 - Write Description
 - Add support for other moons in orbit?
