@@ -1,13 +1,13 @@
 # Celestial Tint
 This mod adds a beautiful view when in orbit. This includes four different orbit locations.  
-  
-**You can uninstall or disable *SpaceShipDoor* and *ShipWindows*.**  
-**This mod is not compatible with SpaceSunShin.**  
+
+### Compatibilities
+- **[Compatible]** Highly recommended mod: **[SpaceShipDoor](https://thunderstore.io/c/lethal-company/p/Wolf11221/SpaceShipDoor/)**
+- **[Incompatible]** This mod has a *minor* incompatibility with *SpaceSunShin.* 
   
 ![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Celestial-Tint/main/Screenshots/Wasteland.jpg "Wasteland")
   
-### Some relevant notes:  
-- It currently does not support modded moons. I will try to tackle this later.
+### Relevant notes:  
 - The planets are not completely lore accurate. This is not achievable right now.
   
 ### Planned features:
