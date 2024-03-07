@@ -2,6 +2,7 @@
 This mod adds a beautiful view when in orbit. This includes four different orbit locations.  
   
 **You can uninstall or disable *SpaceShipDoor* and *ShipWindows*.**
+  
 ![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Celestial-Tint/main/Screenshots/Wasteland.jpg "Wasteland")
   
 ### Some relevant notes:  
