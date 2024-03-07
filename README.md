@@ -1,7 +1,8 @@
 # Celestial Tint
-This mod adds a beautiful view when in orbit. This includes four different orbit locations.
+This mod adds a beautiful view when in orbit. This includes four different orbit locations.  
+### These mods are required to look outside: [Ship Windows](https://thunderstore.io/c/lethal-company/p/veri/ShipWindows/) and/or [Spaceship Doors](https://thunderstore.io/c/lethal-company/p/Wolf11221/SpaceShipDoor/).
   
-![Screenshot_1](https://raw.githubusercontent.com/sfDesat/ViewExtension/main/Screenshots/Before.png "Before Screenshot")
+![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Celestial-Tint/main/Screenshots/Wasteland.jpg "Wasteland")
   
 ### Some relevant notes:  
 - It currently does not support modded moons. I will try to tackle this later.
