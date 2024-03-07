@@ -11,11 +11,14 @@ This mod adds a beautiful view when in orbit. This includes four different orbit
 - The planets are not completely lore accurate. This is not achievable right now.
   
 ### Planned features:
+- Switch from prefabnames to leveltags
+- Add support for upside-down and sideways orbits
 - Add support for Eclipsed weather
 - Add a meteorshower event
 - Add more presets
 - Add support for custom suns (color and type)
-- Add support for other moons in orbit?
+- Add support for other moons in orbit
+- Change/Add the ship in space (rocket/booster attachment)
 # 
   
 _If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/lcmod) and search for `sfDesat`._
