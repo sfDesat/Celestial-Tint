@@ -13,7 +13,7 @@ This mod adds a beautiful view when in orbit. This includes four different orbit
 - Add a meteorshower event
 - Refine Company preset
 - Write Description
-- Added other moons in orbit?
+- Add support for other moons in orbit?
 # 
   
 _If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Aquatis/issues) or join the [discord server](https://discord.gg/lcmod) and search for `sfDesat`._
