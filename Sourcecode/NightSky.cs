@@ -1,14 +1,24 @@
-﻿using BepInEx;
+using BepInEx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
 
 [BepInPlugin("NightSkyPlugin", "Night Sky Plugin", "1.0.1")]
 public class NightSkyPlugin : BaseUnityPlugin
 {
     private string assetBundleName = "OrbitPrefabBundle";
     private AssetBundle assetBundle;
+
+    // Dictionary to map moon names to prefab names
+    private Dictionary<string, string> prefabNameMapping = new Dictionary<string, string>
+    {
+        { "moon1", "Prefab1" },
+        { "moon2", "Prefab2" },
+        { "moon3", "Prefab3" }
+        // Add more mappings as needed
+    };
 
     void Awake()
     {
@@ -48,11 +58,11 @@ public class NightSkyPlugin : BaseUnityPlugin
         if (scene.name == "SampleSceneRelay")
         {
             Debug.Log("[NightSkyPlugin] SampleSceneRelay loaded");
-            ReplaceCurrentPlanetPrefabs(scene.buildIndex);
+            ReplaceCurrentPlanetPrefabs();
         }
     }
 
-    private void ReplaceCurrentPlanetPrefabs(int sceneLevelID)
+    private void ReplaceCurrentPlanetPrefabs()
     {
         if (assetBundle != null)
         {
@@ -60,20 +70,26 @@ public class NightSkyPlugin : BaseUnityPlugin
 
             foreach (SelectableLevel selectableLevel in selectableLevels)
             {
-                int levelID = selectableLevel.levelID;
-                int prefabNumber = GetPrefabNumberForLevel(levelID);
+                string moonName = selectableLevel.planetPrefab.name.ToLower();
 
-                string prefabName = $"Prefab{prefabNumber}";
-                GameObject newPrefab = assetBundle.LoadAsset<GameObject>(prefabName);
-
-                if (newPrefab != null)
+                // Check if the moonName is in the mapping
+                if (prefabNameMapping.TryGetValue(moonName, out string prefabName))
                 {
-                    selectableLevel.planetPrefab = newPrefab;
-                    Debug.Log($"[NightSkyPlugin] Replaced currentPlanetPrefab for LevelID {levelID} with PrefabNumber {prefabNumber}");
+                    GameObject newPrefab = assetBundle.LoadAsset<GameObject>(prefabName);
+
+                    if (newPrefab != null)
+                    {
+                        selectableLevel.planetPrefab = newPrefab;
+                        Debug.Log($"[NightSkyPlugin] Replaced currentPlanetPrefab for {moonName} with {prefabName}");
+                    }
+                    else
+                    {
+                        Debug.LogError($"[NightSkyPlugin] Prefab not found for {moonName} in AssetBundle");
+                    }
                 }
                 else
                 {
-                    Debug.LogError($"[NightSkyPlugin] Prefab not found for LevelID {levelID} and PrefabNumber {prefabNumber} in AssetBundle");
+                    Debug.LogError($"[NightSkyPlugin] Unknown moon name: {moonName}");
                 }
             }
 
@@ -82,25 +98,6 @@ public class NightSkyPlugin : BaseUnityPlugin
         else
         {
             Debug.LogError($"[NightSkyPlugin] AssetBundle is not loaded. Unable to replace prefabs.");
-        }
-    }
-
-    private int GetPrefabNumberForLevel(int levelID)
-    {
-        switch (levelID)
-        {
-            case 0: return 1;
-            case 1: return 1;
-            case 2: return 2;
-            case 3: return 4;
-            case 4: return 2;
-            case 5: return 3;
-            case 6: return 3;
-            case 7: return 1;
-            case 8: return 3;
-            default:
-                Debug.LogError($"[NightSkyPlugin] Unknown level ID: {levelID}");
-                return 0;
         }
     }
 }
