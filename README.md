@@ -15,7 +15,7 @@ This mod adds a beautiful view when in orbit. This includes four different orbit
 - Add a meteorshower event
 - Add support for on-planet weather to show in orbit
 - Refine Company preset
-- Write Description
+- Update Description
 - Add support for other moons in orbit?
 # 
   
