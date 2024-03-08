@@ -14,12 +14,13 @@ This mod adds a beautiful view when in orbit. This currently includes four diffe
 - **[For Modders]** [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
   
 ### Planned features:
+- Do a complete art overhaul (using ShaderGraph?)
+- Add a meteorshower event
+- Add more tags
 - Add a sound filter when outside
 - Add a scannode to the planet
 - Add support for upside-down and sideways orbits
 - Add support for Eclipsed weather
-- Add a meteorshower event
-- Add more tags
 - Add support for custom suns (color, type and amount)
 - Add support for other moons in orbit
 - Change/Add the ship in space (rocket/booster attachment)
