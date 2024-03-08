@@ -11,7 +11,7 @@ This mod adds a beautiful view when in orbit. This currently includes four diffe
   
 ### Relevant notes:  
 - The planets are not completely lore accurate. This is not achievable right now.
-- **[For Modders]** [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/%5BFor-Modders%5D-How-to-add-support-to-your-moon)
+- **[For Modders]** [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
   
 ### Planned features:
 - Add support for upside-down and sideways orbits
