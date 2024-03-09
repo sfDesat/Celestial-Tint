@@ -11,6 +11,7 @@ public class NightSkyPlugin : BaseUnityPlugin
 {
     private string assetBundleName = "OrbitPrefabBundle";
     private AssetBundle assetBundle;
+    private static NightSkyPlugin instance;
 
     // Dictionary to map moon names to prefab names
     private Dictionary<string, string> prefabNameMapping = new Dictionary<string, string>
@@ -23,11 +24,12 @@ public class NightSkyPlugin : BaseUnityPlugin
 
     void Awake()
     {
+        instance = this;
         Debug.Log("[NightSkyPlugin] Nightsky loaded");
 
         // Apply Harmony patches
         Harmony harmony = new Harmony("com.nightsky.mod");
-        harmony.PatchAll(typeof(Patches));
+        harmony.PatchAll(typeof(NightSkyPlugin));
 
         LoadAssetBundle();
     }
@@ -60,11 +62,13 @@ public class NightSkyPlugin : BaseUnityPlugin
     [HarmonyPostfix]
     private static void Terminal_Start_Postfix()
     {
-        Debug.Log("[NightSkyPlugin] Terminal.Start postfix");
-        ReplaceCurrentPlanetPrefabs();
+        if (instance != null)
+        {
+            instance.ReplaceCurrentPlanetPrefabs();
+        }
     }
 
-    private static void ReplaceCurrentPlanetPrefabs()
+    private void ReplaceCurrentPlanetPrefabs()
     {
         if (assetBundle != null)
         {
