@@ -66,11 +66,9 @@ public static class NightSkyManager
 	{
 		if (assetBundle != null)
 		{
-			ExtendedLevel[] extendedLevels = Resources.FindObjectsOfTypeAll<ExtendedLevel>();
-
-			foreach (ExtendedLevel extendedLevel in extendedLevels)
-			{
-				SelectableLevel selectableLevel = extendedLevel.selectableLevel;
+            foreach (ExtendedLevel extendedLevel in LethalLevelLoader.PatchedContent.ExtendedLevels)
+            {
+                SelectableLevel selectableLevel = extendedLevel.selectableLevel;
 				bool foundCompatiblePrefab = false;
 
 				foreach (string levelTag in extendedLevel.levelTags)
