@@ -27,7 +27,7 @@ public class NightSkyPlugin : BaseUnityPlugin
 
         // Apply Harmony patches
         Harmony harmony = new Harmony("com.nightsky.mod");
-        harmony.PatchAll(typeof(NightSkyPlugin));
+        harmony.PatchAll(typeof(Patches));
 
         LoadAssetBundle();
     }
@@ -64,7 +64,7 @@ public class NightSkyPlugin : BaseUnityPlugin
         ReplaceCurrentPlanetPrefabs();
     }
 
-    private void ReplaceCurrentPlanetPrefabs()
+    private static void ReplaceCurrentPlanetPrefabs()
     {
         if (assetBundle != null)
         {
