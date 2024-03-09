@@ -100,6 +100,9 @@ public static class NightSkyManager
 			}
 
 			assetBundle.Unload(false);
+
+			// Call StartOfRound.Instance.ChangePlanet() at the end
+			StartOfRound.Instance.ChangePlanet();
 		}
 		else
 		{
