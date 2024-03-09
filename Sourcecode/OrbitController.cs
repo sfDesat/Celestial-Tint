@@ -42,9 +42,7 @@ public class OrbitController : MonoBehaviour
         // Get the Physically Based Sky
         if (skyVolume != null && skyVolume.profile != null)
         {
-            skyVolume.profile.TryGet(out sky);
-
-            if (sky != null)
+            if (skyVolume.profile.TryGet(out sky))
             {
                 Debug.Log("[OrbitController] Physically Based Sky successfully obtained");
 
