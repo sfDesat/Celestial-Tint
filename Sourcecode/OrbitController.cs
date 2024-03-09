@@ -23,6 +23,10 @@ public class OrbitController : MonoBehaviour
     public Color planetTint;
     public Color airTint;
 
+    [Header("Material Settings")]
+    public Material planetMaterial;
+    public Cubemap assignedCubemap;
+
     [Header("References")]
     public GameObject sun;
     public GameObject moon;
@@ -31,72 +35,45 @@ public class OrbitController : MonoBehaviour
 
     private PhysicallyBasedSky sky;
 
-    public void Awake()
+    private void Awake()
     {
         Debug.Log("[OrbitController] Awake started");
 
         // Get the Physically Based Sky
-        if (skyVolume != null)
+        if (skyVolume != null && skyVolume.profile != null)
         {
-            if (skyVolume.profile != null)
+            skyVolume.profile.TryGet(out sky);
+
+            if (sky != null)
             {
-                skyVolume.profile.TryGet(out sky);
+                Debug.Log("[OrbitController] Physically Based Sky successfully obtained");
 
-                if (sky != null)
-                {
-                    Debug.Log("[OrbitController] Physically Based Sky successfully obtained");
+                // Apply starting rotation
+                sun.transform.Rotate(Random.Range(sunStartMin, sunStartMax), 0, 0, Space.Self);
+                sky.planetRotation.value = planetRotateStartVector;
 
-                    // Apply starting rotation
-                    sun.transform.Rotate(Random.Range(sunStartMin, sunStartMax), 0, 0, Space.Self);
-                    sky.planetRotation.value = planetRotateStartVector;
+                // Apply tints
+                sky.groundTint.value = planetTint;
+                sky.airTint.value = airTint;
 
-                    // Apply tints
-                    sky.groundTint.value = planetTint;
-                    sky.airTint.value = airTint;
+                // Use the assigned Cubemap directly
+                sky.groundColorTexture.value = assignedCubemap;
+                sky.groundEmissionTexture.value = assignedCubemap;
 
-                    // Apply textures
-                    sky.groundColorTexture.value = planetTexture;
-                    sky.groundEmissionTexture.value = planetTexture;
-
-                    // Apply Orbit
-                    sky.planetCenterPosition.value = new(0, -(planetRadius + orbitHeight), 0);
-                    planetPosition = sky.planetCenterPosition.value;
-                }
-                else
-                {
-                    Debug.LogError("[OrbitController] Physically Based Sky not found in profile");
-                }
+                // Apply Orbit
+                sky.planetCenterPosition.value = new Vector3(0, -(planetRadius + orbitHeight), 0);
+                planetPosition = sky.planetCenterPosition.value;
             }
             else
             {
-                Debug.LogError("[OrbitController] SkyVolume profile is null");
+                Debug.LogError("[OrbitController] Physically Based Sky not found in profile");
             }
         }
         else
         {
-            Debug.LogError("[OrbitController] SkyVolume is null");
+            Debug.LogError("[OrbitController] SkyVolume or its profile is null");
         }
 
         Debug.Log("[OrbitController] Awake completed");
-    }
-
-    private void FixedUpdate()
-    {
-        SpaceSimulation();
-    }
-
-    private void SpaceSimulation()
-    {
-        sky.planetRotation.value += planetRotateVector;
-        sky.planetCenterPosition.value = planetPosition;
-
-        if (!movePlanetOnly)
-        {
-            if (moon != null)
-                moon.transform.Rotate(moonRotateVector);
-
-            sun.transform.Rotate(sunRotateVector);
-            sky.spaceRotation.value += planetRotateVector;
-        }
     }
 }
