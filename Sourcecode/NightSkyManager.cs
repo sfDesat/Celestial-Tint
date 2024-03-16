@@ -85,7 +85,7 @@ public static class NightSkyManager
 				if (!foundCompatiblePrefab)
 				{
 					string fallbackPrefabName;
-					if (fallbackPrefabNameMapping.TryGetValue(selectableLevel.PlanetName.ToLower(), out fallbackPrefabName))
+					if (fallbackPrefabNameMapping.TryGetValue(selectableLevel.planetPrefab.name.ToLower(), out fallbackPrefabName))
 					{
 						LoadAndSetPrefab(selectableLevel, fallbackPrefabName);
 					}
