@@ -14,7 +14,7 @@ This mod adds a beautiful view when in orbit. This currently includes four diffe
 - **[For Modders]** [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
   
 ### Planned features:
-- Rework the planet visuals
+- Update the planet visuals
 - Add more tags
 - Add a sound filter when outside
 - Add a scannode to the planet
