@@ -1,11 +1,7 @@
 # Celestial Tint
 This mod adds a beautiful view when in orbit. This currently includes four different orbit locations.  
-### Installation (choose)
-- Copy the config file `veri.lc.shipwindow.cfg` that is included, into your config folder
-- Inside the `veri.lc.shipwindows.cfg`, set HideSpaceProps = false and SpaceOutside = 0
 ### Compatibilities
 - **[Recommended]** Highly recommended mod: **[SpaceShipDoor](https://thunderstore.io/c/lethal-company/p/Wolf11221/SpaceShipDoor/)**
-- **[Incompatible]** This mod has a *minor* incompatibility with *SpaceSunShin.* 
   
 ![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Celestial-Tint/main/Screenshots/Desert.png "Desert")
   
