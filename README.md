@@ -19,6 +19,7 @@ This mod adds a beautiful view when in orbit. This currently includes four diffe
 - Add support for Eclipsed weather
 - Add support for custom suns (color, type and amount)
 - Add support for other moons in orbit
+- Fix invisible shipparts
 - Change/Add the ship in space (rocket/booster attachment)
 # 
   
