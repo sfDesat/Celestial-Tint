@@ -12,8 +12,7 @@ public class OrbitController : MonoBehaviour
     public Vector3 planetRotateStartVector = new Vector3(0, 0, -10);
     [Space]
     public Vector3 planetPosition;
-    public float orbitHeight = 80000f;
-    public float planetRadius = 6378100f;
+    public float orbitHeight = 50000;
     [Space]
     public float sunStartMin;
     public float sunStartMax;
@@ -60,7 +59,7 @@ public class OrbitController : MonoBehaviour
     }
 
 
-    private void Awake()
+    private void Start()
     {
         Debug.Log("[OrbitController] Awake started");
 
@@ -87,12 +86,12 @@ public class OrbitController : MonoBehaviour
                 planetMaterial.SetTexture("_SurfaceTexture", planetTexture);
 
                 // Apply Orbit
-                sky.planetCenterPosition.value = new Vector3(0, -(planetRadius + orbitHeight), 0);
-                planetPosition = sky.planetCenterPosition.value;
+                sky.planetCenterPosition.value = new Vector3(0, sky.planetaryRadius.value + orbitHeight, 0);
+                Debug.Log("[OrbitController] Set planet center to " + sky.planetCenterPosition.value);
 
                 // Set MeteorShower
                 if (Random.Range(1, meteorShowerChance) == 2)
-                    meteorShower.active = true;
+                    meteorShower.SetActive(true);
             }
             else
             {
@@ -120,5 +119,7 @@ public class OrbitController : MonoBehaviour
             //planetRenderTexture.Initialize();
             //Debug.Log("CRT applied");
         }
+
+        sky.planetCenterPosition.value = planetPosition;
     }
 }

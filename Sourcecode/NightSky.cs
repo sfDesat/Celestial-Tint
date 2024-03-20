@@ -1,4 +1,4 @@
-using BepInEx;
+﻿using BepInEx;
 using UnityEngine;
 
 [BepInPlugin("NightSkyPlugin", "Night Sky Plugin", "1.0.7")]
