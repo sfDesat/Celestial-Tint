@@ -10,17 +10,13 @@ This mod adds a beautiful view when in orbit. This currently includes four diffe
 - **[For Modders]** [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
   
 ### Planned features:
-- Add a sound filter when outside
 - Add a scannode to the planet (?)
 - Add support for upside-down and sideways orbits (/)
 - Add support for Eclipsed weather
 - Add support for custom suns (color, type and amount)
 - Add support for other moons in orbit (/)
-- Fix invisible shipparts
-- Fix white stripe in distance
 - Fix seamless texture
 - Fix animation
-- Change/Add the ship in space (rocket/booster attachment)
 # 
   
 _If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Celestial-Tint/issues) or join the [discord server](https://discord.gg/lcmod) and search for `sfDesat`._
