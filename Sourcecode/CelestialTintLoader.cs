@@ -12,7 +12,7 @@ public static class CelestialTintLoader
 
     private static Dictionary<string, string> tagPrefabNameMapping = new Dictionary<string, string>
     {
-        // Legacy Tags for v1.1.6
+        // Legacy Tags from v1.1.6
         { "Desert", "Prefab_Canyon" },
         { "Forest", "Prefab_Valley" },
         { "Snow", "Prefab_Tundra" },
@@ -81,14 +81,45 @@ public static class CelestialTintLoader
                 SelectableLevel selectableLevel = extendedLevel.SelectableLevel;
                 bool foundCompatiblePrefab = false;
 
-                // Check if there are ContentTags in the ExtendedLevel
-                foreach (ContentTag contentTag in extendedLevel.ContentTags)
+                if (!string.IsNullOrEmpty(CelestialTint.ModConfig.PlanetTagMappings.Value))
                 {
-                    if (tagPrefabNameMapping.TryGetValue(contentTag.contentTagName, out string prefabName))
+                    foreach (string mapping in CelestialTint.ModConfig.PlanetTagMappings.Value.Split(','))
                     {
-                        LoadAndSetPrefab(selectableLevel, prefabName);
-                        foundCompatiblePrefab = true;
-                        break;
+                        string[] parts = mapping.Trim().Split('@'); // Trim leading and trailing whitespace
+                        if (parts.Length != 2)
+                        {
+                            Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
+                            continue; // Skip this mapping if format is invalid
+                        }
+
+                        string planetName = parts[0].Trim(); // Trim leading and trailing whitespace
+                        string tagName = parts[1].Trim(); // Trim leading and trailing whitespace
+
+                        // Compare planetName with ExtendedLevel.NumberlessPlanetName
+                        if (extendedLevel.NumberlessPlanetName.Equals(planetName))
+                        {
+                            // Use the prefab specified in the mapping
+                            if (tagPrefabNameMapping.TryGetValue(tagName, out string prefabName))
+                            {
+                                LoadAndSetPrefab(selectableLevel, prefabName);
+                                foundCompatiblePrefab = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!foundCompatiblePrefab)
+                {
+                    // Check if there are ContentTags in the ExtendedLevel
+                    foreach (ContentTag contentTag in extendedLevel.ContentTags)
+                    {
+                        if (tagPrefabNameMapping.TryGetValue(contentTag.contentTagName, out string prefabName))
+                        {
+                            LoadAndSetPrefab(selectableLevel, prefabName);
+                            foundCompatiblePrefab = true;
+                            break;
+                        }
                     }
                 }
 
