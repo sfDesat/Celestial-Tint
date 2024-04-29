@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using HarmonyLib;
@@ -9,6 +11,23 @@ public static class CelestialTintLoader
 {
     private static string assetBundleName = "OrbitPrefabBundle";
     private static AssetBundle assetBundle;
+
+    private static Dictionary<string, string> tagVanillaNameMapping = new Dictionary<string, string>
+    {
+        { "Experimentation", "Prefab_Wasteland" },
+        { "Vow", "Prefab_Valley" },
+        { "Gordion", "Prefab_Company" },
+        { "March", "Prefab_Valley" },
+        { "Adamance", "Prefab_Valley" },
+        { "Rend", "Prefab_Tundra" },
+        { "Dine", "Prefab_Tundra" },
+        { "Offense", "Prefab_Canyon" },
+        { "Assurance", "Prefab_Canyon" },
+        { "Titan", "Prefab_Tundra" },
+        { "Artifice", "Prefab_Canyon" },
+        { "Liquidation", "Prefab_Ocean" },
+        { "Embrion", "Prefab_Valley" },
+    };
 
     private static Dictionary<string, string> tagPrefabNameMapping = new Dictionary<string, string>
     {
@@ -63,12 +82,83 @@ public static class CelestialTintLoader
             }
             else
             {
-                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] Failed to load AssetBundle at path: {bundlePath}");
+                Debug.LogError($"[Celestial Tint Loader] Failed to load AssetBundle at path: {bundlePath}");
             }
         }
         else
         {
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] AssetBundle not found at path: {bundlePath}");
+            Debug.LogError($"[Celestial Tint Loader] AssetBundle not found at path: {bundlePath}");
+        }
+    }
+
+    private static void ReplaceVanillaPlanetPrefabs()
+    {
+        if (assetBundle != null)
+        {
+            StartOfRound startOfRound = GameObject.FindObjectOfType<StartOfRound>();
+
+            foreach (SelectableLevel selectableLevel in startOfRound.levels)
+            {
+                bool foundCompatiblePrefab = false;
+
+                // Check if there are custom mappings in the config file
+                if (!string.IsNullOrEmpty(CelestialTint.ModConfig.PlanetTagMappings.Value))
+                {
+                    foreach (string mapping in CelestialTint.ModConfig.PlanetTagMappings.Value.Split(','))
+                    {
+                        string[] parts = mapping.Trim().Split('@'); // Trim leading and trailing whitespace
+                        if (parts.Length != 2)
+                        {
+                            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
+                            continue;
+                        }
+
+                        string planetNameConfig = parts[0].Trim(); // Trim leading and trailing whitespace
+                        string tagName = parts[1].Trim(); // Trim leading and trailing whitespace
+
+                        string planetName = selectableLevel.PlanetName.TrimStart(' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+
+                        // Compare planetName with selectableLevel.PlanetName
+                        if (planetName.Equals(planetNameConfig, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Use the prefab specified in the mapping
+                            if (tagPrefabNameMapping.TryGetValue(tagName, out string prefabName))
+                            {
+                                LoadAndSetPrefab(selectableLevel, prefabName);
+                                foundCompatiblePrefab = true;
+                                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName} based on custom mapping.");
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // If no custom mappings are found, use the default vanilla name mapping
+                if (!foundCompatiblePrefab)
+                {
+                    string planetName = selectableLevel.PlanetName.TrimStart(' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+                    string prefabName;
+
+                    if (tagVanillaNameMapping.TryGetValue(planetName, out prefabName))
+                    {
+                        LoadAndSetPrefab(selectableLevel, prefabName);
+                    }
+                    else
+                    {
+                        LoadAndSetPrefab(selectableLevel, "Prefab_Wasteland");
+                        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
+                    }
+                }
+            }
+
+            assetBundle.Unload(false);
+
+            // Call StartOfRound.Instance.ChangePlanet() at the end
+            StartOfRound.Instance.ChangePlanet();
+        }
+        else
+        {
+            Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
         }
     }
 
@@ -82,6 +172,7 @@ public static class CelestialTintLoader
                 SelectableLevel selectableLevel = extendedLevel.SelectableLevel;
                 bool foundCompatiblePrefab = false;
 
+                // Checking config file entries
                 if (!string.IsNullOrEmpty(CelestialTint.ModConfig.PlanetTagMappings.Value))
                 {
                     foreach (string mapping in CelestialTint.ModConfig.PlanetTagMappings.Value.Split(','))
@@ -90,7 +181,7 @@ public static class CelestialTintLoader
                         if (parts.Length != 2)
                         {
                             if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
-                            continue; // Skip this mapping if format is invalid
+                            continue;
                         }
 
                         string planetName = parts[0].Trim(); // Trim leading and trailing whitespace
@@ -147,7 +238,7 @@ public static class CelestialTintLoader
         }
         else
         {
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
+            Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
         }
     }
 
@@ -163,7 +254,7 @@ public static class CelestialTintLoader
         }
         else
         {
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] Prefab not found in AssetBundle: {prefabName}");
+            Debug.LogError($"[Celestial Tint Loader] Prefab not found in AssetBundle: {prefabName}");
         }
     }
 
@@ -171,7 +262,25 @@ public static class CelestialTintLoader
     [HarmonyPostfix]
     private static void Terminal_Start_Postfix()
     {
-        // Replace planet prefabs when Terminal has started
-        ReplaceCurrentPlanetPrefabs();
+        // Get a list of all loaded assemblies
+        var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+        // Check if the assembly of the other mod is loaded
+        bool isOtherModLoaded = loadedAssemblies.Any(assembly => assembly.FullName.StartsWith("LethalLevelLoader"));
+
+        if (isOtherModLoaded)
+        {
+            // The other mod is loaded, do something
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Detected LethalLevelLoader");
+
+            ReplaceCurrentPlanetPrefabs();
+        }
+        else
+        {
+            // The other mod is not loaded
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Did not detect LethalLevelLoader");
+
+            ReplaceVanillaPlanetPrefabs();
+        }
     }
 }
