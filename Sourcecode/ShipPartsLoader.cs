@@ -12,18 +12,17 @@ public static class ShipPartsLoader
 
     public static void Initialize()
     {
-        if (CelestialTint.ModConfig.DisplayShipParts.Value)
+        
+        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Parts Loading");
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+
+        if (isSampleSceneRelayLoaded)
         {
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Parts Loading");
-
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-
-            if (isSampleSceneRelayLoaded)
-            {
-                ActivateSpaceProps();
-            }
+            ActivateSpaceProps();
         }
+        
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
