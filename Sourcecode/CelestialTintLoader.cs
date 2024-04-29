@@ -26,6 +26,7 @@ public static class CelestialTintLoader
         { "Ocean", "Prefab_Ocean" },
         { "Rocky", "Prefab_Rocky" },
         { "Volcanic", "Prefab_Volcanic" },
+        { "Argon", "Prefab_Argon" },
     };
 
     private static Dictionary<string, string> fallbackPrefabNameMapping = new Dictionary<string, string>
@@ -37,7 +38,7 @@ public static class CelestialTintLoader
 
     public static void Initialize()
     {
-        Debug.Log("[Celestial Tint Loader] Loader initialized");
+        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Loader initialized");
 
         // Initialize Harmony
         Harmony harmony = new Harmony("com.celestialtint.mod");
@@ -58,16 +59,16 @@ public static class CelestialTintLoader
 
             if (assetBundle != null)
             {
-                Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {bundlePath}");
+                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {bundlePath}");
             }
             else
             {
-                Debug.LogError($"[Celestial Tint Loader] Failed to load AssetBundle at path: {bundlePath}");
+                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] Failed to load AssetBundle at path: {bundlePath}");
             }
         }
         else
         {
-            Debug.LogError($"[Celestial Tint Loader] AssetBundle not found at path: {bundlePath}");
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] AssetBundle not found at path: {bundlePath}");
         }
     }
 
@@ -88,7 +89,7 @@ public static class CelestialTintLoader
                         string[] parts = mapping.Trim().Split('@'); // Trim leading and trailing whitespace
                         if (parts.Length != 2)
                         {
-                            Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
+                            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
                             continue; // Skip this mapping if format is invalid
                         }
 
@@ -134,7 +135,7 @@ public static class CelestialTintLoader
                     else
                     {
                         LoadAndSetPrefab(selectableLevel, "Prefab_Wasteland");
-                        Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
+                        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
                     }
                 }
             }
@@ -146,7 +147,7 @@ public static class CelestialTintLoader
         }
         else
         {
-            Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
         }
     }
 
@@ -158,11 +159,11 @@ public static class CelestialTintLoader
         if (newPrefab != null)
         {
             selectableLevel.planetPrefab = newPrefab;
-            Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName}");
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName}");
         }
         else
         {
-            Debug.LogError($"[Celestial Tint Loader] Prefab not found in AssetBundle: {prefabName}");
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogError($"[Celestial Tint Loader] Prefab not found in AssetBundle: {prefabName}");
         }
     }
 
