@@ -1,7 +1,9 @@
 # Celestial Tint
 This mod adds a beautiful view when in orbit. This currently includes four different orbit locations.  
-### Compatibilities
-- **[Recommended]** Highly recommended mod: **[SpaceShipDoor](https://thunderstore.io/c/lethal-company/p/Wolf11221/SpaceShipDoor/)**
+### Configuration
+- **[PlanetTagMappings]** Allows you to set custom tags per planet. [previews](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
+- **[ShipDoorAccess]** Allow the door to be opened while in orbit.
+- **[DisplayShipParts]** *Non-Functional* Display msising ship parts in orbit.
   
 ![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Celestial-Tint/main/Screenshots/Desert.png "Desert")
   
