@@ -5,15 +5,15 @@ using UnityEngine.Rendering.HighDefinition;
 public class OrbitController : MonoBehaviour
 {
     [Header("In Space Settings")]
-    public Vector3 sunRotateVector = new Vector3(0.002f, 0, 0);
+    public Vector3 sunRotateVector = new Vector3(0.0015f, 0, 0);
     public Vector3 planetRotateVector = new Vector3(0, 0, -0.0015f);
     public Vector3 planetRotateStartVector = new Vector3(0, 0, -10);
     [Space]
     public Vector3 planetPosition;
-    public float orbitHeight;
+    public float orbitHeight = 250000;
     [Space]
-    public float sunStartMin;
-    public float sunStartMax;
+    public float sunStartMin = 8;
+    public float sunStartMax = 15;
     [Space]
     public GameObject meteorShower;
     public float meteorShowerChance = 3f;
@@ -35,7 +35,7 @@ public class OrbitController : MonoBehaviour
 
     private void OnValidate()
     {
-        Debug.Log("[OrbitController] OnVoid called");
+        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT OrbitController] OnVoid called");
 
         // Set color in the shader
         if (planetMaterial != null)
@@ -43,11 +43,11 @@ public class OrbitController : MonoBehaviour
             planetMaterial.SetColor("_SurfaceColor", planetTint);
             planetMaterial.SetTexture("_SurfaceTexture", planetTexture);
 
-            Debug.Log("[OrbitController] Shader properties set successfully");
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT OrbitController] Shader properties set successfully");
         }
         else
         {
-            Debug.LogError("[OrbitController] planetMaterial is null. Cannot set shader properties.");
+            Debug.LogError("[CT OrbitController] planetMaterial is null. Cannot set shader properties.");
         }
 
         planetRenderTexture.Update();
@@ -57,14 +57,14 @@ public class OrbitController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("[OrbitController] Awake started");
+        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT OrbitController] Awake started");
 
         // Get the Physically Based Sky
         if (skyVolume != null && skyVolume.profile != null)
         {
             if (skyVolume.profile.TryGet(out sky))
             {
-                Debug.Log("[OrbitController] Physically Based Sky successfully obtained");
+                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT OrbitController] Physically Based Sky successfully obtained");
 
                 // Apply starting rotation
                 sun.transform.Rotate(Random.Range(sunStartMin, sunStartMax), 0, 0, Space.Self);
@@ -84,22 +84,22 @@ public class OrbitController : MonoBehaviour
                 // Apply Orbit
                 planetPosition = new Vector3(0, -(sky.planetaryRadius.value + orbitHeight), 0);
                 sky.planetCenterPosition.value = planetPosition;
-                Debug.Log("[OrbitController] Set planet center to " + sky.planetCenterPosition.value);
+                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT OrbitController] Set planet center to " + sky.planetCenterPosition.value);
 
                 // Set MeteorShower
                 //if (Random.Range(1, meteorShowerChance) == 1) meteorShower.SetActive(true);
             }
             else
             {
-                Debug.LogError("[OrbitController] Physically Based Sky not found in profile");
+                Debug.LogError("[CT OrbitController] Physically Based Sky not found in profile");
             }
         }
         else
         {
-            Debug.LogError("[OrbitController] SkyVolume or its profile is null");
+            Debug.LogError("[CT OrbitController] SkyVolume or its profile is null");
         }
 
-        Debug.Log("[OrbitController] Awake completed");
+        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT OrbitController] Awake completed");
     }
 
     public void FixedUpdate()
