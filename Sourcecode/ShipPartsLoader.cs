@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 
 public static class ShipPartsLoader
 {
-    private static bool isSampleSceneRelayLoaded = false;
     private static List<GameObject> spacePropsCopies = new List<GameObject>();
 
     // Define the propNames list here
@@ -12,58 +12,76 @@ public static class ShipPartsLoader
 
     public static void Initialize()
     {
-        
         if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Parts Loading");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
 
-        if (isSampleSceneRelayLoaded)
+        // Check the initial state of the scene
+        CheckSceneState();
+    }
+
+    private static void CheckSceneState()
+    {
+        // Check if SampleSceneRelay is the only scene loaded
+        if (SceneManager.sceneCount == 1 && SceneManager.GetActiveScene().name == "SampleSceneRelay")
         {
             ActivateSpaceProps();
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Activating Parts");
         }
-        
+        else if (SceneManager.GetActiveScene().name == "SampleSceneRelay")
+        {
+            DeactivateSpaceProps();
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Deactivating Parts");
+        }
+        else
+        {
+            spacePropsCopies.Clear();
+        }
     }
 
     private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "SampleSceneRelay" && SceneManager.sceneCount == 1)
-        {
-            isSampleSceneRelayLoaded = true;
-            ActivateSpaceProps();
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Activating Parts");
-        }
-        else
-        {
-            isSampleSceneRelayLoaded = false;
-            DeactivateSpaceProps();
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Parts Loader] Deactivating Parts");
-        }
+        // Check the scene state after it's loaded
+        CheckSceneState();
+    }
+
+    private static IEnumerator DelayedCheckSceneState()
+    {
+        // Wait for the current frame to end before checking the scene state
+        yield return new WaitForEndOfFrame();
+        CheckSceneState();
     }
 
     private static void OnSceneUnloaded(Scene scene)
     {
-        if (scene.name == "SampleSceneRelay")
-        {
-            isSampleSceneRelayLoaded = false;
-            DeactivateSpaceProps();
-        }
+        // Delay the execution of CheckSceneState to ensure the scene has been fully unloaded
+        CoroutineHandler.Instance.StartCoroutine(DelayedCheckSceneState());
     }
 
     private static void ActivateSpaceProps()
     {
         foreach (string propName in propNames)
         {
-            GameObject originalProp = GameObject.Find(propName);
-            if (originalProp != null)
+            GameObject copy = spacePropsCopies.Find(c => c.name == propName + "_copy");
+            if (copy != null)
             {
-                GameObject copy = Object.Instantiate(originalProp, originalProp.transform.position, originalProp.transform.rotation);
-                spacePropsCopies.Add(copy);
-                copy.SetActive(true);
+                copy.SetActive(true); // Reactivate the existing copy
             }
             else
             {
-                Debug.LogError("GameObject with name '" + propName + "' not found.");
+                GameObject originalProp = GameObject.Find(propName);
+                if (originalProp != null)
+                {
+                    copy = Object.Instantiate(originalProp, originalProp.transform.position, originalProp.transform.rotation);
+                    copy.name = propName + "_copy"; // Set a distinct name for the copy
+                    copy.SetActive(true);
+                    spacePropsCopies.Add(copy); // Add the copy to the list
+                }
+                else
+                {
+                    Debug.LogError("GameObject with name '" + propName + "' not found.");
+                }
             }
         }
     }
@@ -72,8 +90,26 @@ public static class ShipPartsLoader
     {
         foreach (GameObject copy in spacePropsCopies)
         {
-            Object.Destroy(copy);
+            copy.SetActive(false); // Deactivate the copy
         }
-        spacePropsCopies.Clear();
+    }
+
+
+    // Coroutine handler to allow starting coroutines in static methods
+    public class CoroutineHandler : MonoBehaviour
+    {
+        private static CoroutineHandler _instance;
+        public static CoroutineHandler Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new GameObject("CoroutineHandler").AddComponent<CoroutineHandler>();
+                    DontDestroyOnLoad(_instance.gameObject);
+                }
+                return _instance;
+            }
+        }
     }
 }
