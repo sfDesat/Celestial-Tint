@@ -1,7 +1,3 @@
-## NOTICE - development pause
-I have personally decided to step down from modding Lethal Company. Maybe I will return someday, but that is not a promise. As for this mod:  
-**_Fork with credit is allowed._**  
-
 # Celestial Tint
 This mod adds a beautiful view when in orbit.  
 ### Configuration:
