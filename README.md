@@ -3,7 +3,7 @@ I have personally decided to step down from modding Lethal Company. Maybe I will
 **_Fork with credit is allowed._**  
 
 # Celestial Tint
-This mod adds a beautiful view when in orbit. This currently includes four different orbit locations.  
+This mod adds a beautiful view when in orbit.  
 ### Configuration:
 - **[VanillaMode]** Shows the vanilla planets outside, with added lighting.
 - **[PlanetTagMappings]** Allows you to set custom tags per planet. [previews](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
