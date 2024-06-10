@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -6,11 +7,17 @@ using System.Reflection;
 using UnityEngine;
 using HarmonyLib;
 using LethalLevelLoader;
+using UnityEngine.SceneManagement;
 
 public static class CelestialTintLoader
 {
+    private static List<GameObject> instantiatedPrefabs = new List<GameObject>();
+    private static GameObject prefab;
+
     private static string assetBundleName = "OrbitPrefabBundle";
+    private static string SmallAssetBundleName = "SmallOrbitPrefabBundle";
     private static AssetBundle assetBundle;
+    private static AssetBundle SmallAssetBundle;
 
     private static Dictionary<string, string> tagVanillaNameMapping = new Dictionary<string, string>
     {
@@ -64,13 +71,18 @@ public static class CelestialTintLoader
         harmony.PatchAll(typeof(CelestialTintLoader));
 
         LoadAssetBundle();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
     private static void LoadAssetBundle()
     {
-        // Get Assetbundle location
         string assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         string bundlePath = Path.Combine(assemblyDirectory, assetBundleName);
+
+        string SmallAssemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        string SmallBundlePath = Path.Combine(SmallAssemblyDirectory, SmallAssetBundleName);
 
         if (File.Exists(bundlePath))
         {
@@ -89,17 +101,63 @@ public static class CelestialTintLoader
         {
             Debug.LogError($"[Celestial Tint Loader] AssetBundle not found at path: {bundlePath}");
         }
+
+        if (File.Exists(SmallBundlePath))
+        {
+            SmallAssetBundle = AssetBundle.LoadFromFile(SmallBundlePath);
+
+            if (SmallAssetBundle != null)
+            {
+                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {SmallBundlePath}");
+            }
+            else
+            {
+                Debug.LogError($"[Celestial Tint Loader] Failed to load AssetBundle at path: {SmallBundlePath}");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[Celestial Tint Loader] AssetBundle not found at path: {SmallBundlePath}");
+        }
+    }
+
+    private static void CheckSceneState()
+    {
+        if (SceneManager.sceneCount == 1 && SceneManager.GetActiveScene().name == "SampleSceneRelay")
+        {
+            LoadStarmapContainerPrefab();
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Activating Starmap");
+        }
+        else if (SceneManager.GetActiveScene().name == "SampleSceneRelay")
+        {
+            UnloadStarmapContainerPrefab();
+            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Deactivating Starmap");
+        }
+    }
+
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) { CheckSceneState(); }
+
+    private static void OnSceneUnloaded(Scene scene) { CoroutineHandlerCTL.Instance.StartCoroutine(DelayedCheckSceneState()); }
+
+    private static IEnumerator DelayedCheckSceneState()
+    {
+        // Wait for the current frame to end before checking the scene state
+        yield return new WaitForEndOfFrame();
+        CheckSceneState();
     }
 
     private static void LoadStarmapContainerPrefab()
     {
-        if (assetBundle != null)
+        if (SmallAssetBundle != null)
         {
-            var prefab = assetBundle.LoadAsset<GameObject>("StarmapContainer");
+            prefab = SmallAssetBundle.LoadAsset<GameObject>("StarmapContainer");
             if (prefab != null)
             {
-                GameObject.Instantiate(prefab);
-                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Instantiated StarmapContainer prefab.");
+                GameObject instantiatedPrefab = GameObject.Instantiate(prefab, prefab.transform.position, Quaternion.identity);
+                instantiatedPrefabs.Add(instantiatedPrefab);
+
+                if (CelestialTint.ModConfig.DebugLogging.Value)
+                    Debug.Log("[Celestial Tint Loader] Instantiated StarmapContainer prefab.");
             }
             else
             {
@@ -110,6 +168,18 @@ public static class CelestialTintLoader
         {
             Debug.LogError("[Celestial Tint Loader] AssetBundle is not loaded.");
         }
+    }
+
+    private static void UnloadStarmapContainerPrefab()
+    {
+        foreach (GameObject instantiatedPrefab in instantiatedPrefabs)
+        {
+            GameObject.Destroy(instantiatedPrefab);
+        }
+        instantiatedPrefabs.Clear();
+
+        if (CelestialTint.ModConfig.DebugLogging.Value) 
+            Debug.Log("[Celestial Tint Loader] All instantiated StarmapContainer prefabs have been destroyed.");
     }
 
     private static void ReplaceVanillaPlanetPrefabs()
@@ -303,5 +373,22 @@ public static class CelestialTintLoader
         LoadStarmapContainerPrefab();
 
         assetBundle.Unload(false);
+    }
+
+    public class CoroutineHandlerCTL : MonoBehaviour
+    {
+        private static CoroutineHandlerCTL _instance;
+        public static CoroutineHandlerCTL Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new GameObject("CoroutineHandlerCTL").AddComponent<CoroutineHandlerCTL>();
+                    DontDestroyOnLoad(_instance.gameObject);
+                }
+                return _instance;
+            }
+        }
     }
 }
