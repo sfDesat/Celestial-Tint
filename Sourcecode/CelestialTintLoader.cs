@@ -91,6 +91,27 @@ public static class CelestialTintLoader
         }
     }
 
+    private static void LoadStarmapContainerPrefab()
+    {
+        if (assetBundle != null)
+        {
+            var prefab = assetBundle.LoadAsset<GameObject>("StarmapContainer");
+            if (prefab != null)
+            {
+                GameObject.Instantiate(prefab);
+                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Instantiated StarmapContainer prefab.");
+            }
+            else
+            {
+                Debug.LogError("[Celestial Tint Loader] StarmapContainer prefab not found in AssetBundle.");
+            }
+        }
+        else
+        {
+            Debug.LogError("[Celestial Tint Loader] AssetBundle is not loaded.");
+        }
+    }
+
     private static void ReplaceVanillaPlanetPrefabs()
     {
         if (assetBundle != null)
@@ -150,8 +171,6 @@ public static class CelestialTintLoader
                     }
                 }
             }
-
-            assetBundle.Unload(false);
 
             // Call StartOfRound.Instance.ChangePlanet() at the end
             StartOfRound.Instance.ChangePlanet();
@@ -231,8 +250,6 @@ public static class CelestialTintLoader
                 }
             }
 
-            assetBundle.Unload(false);
-
             // Call StartOfRound.Instance.ChangePlanet() at the end
             StartOfRound.Instance.ChangePlanet();
         }
@@ -282,5 +299,9 @@ public static class CelestialTintLoader
 
             ReplaceVanillaPlanetPrefabs();
         }
+
+        LoadStarmapContainerPrefab();
+
+        assetBundle.Unload(false);
     }
 }
