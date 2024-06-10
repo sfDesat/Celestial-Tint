@@ -5,7 +5,7 @@ using BepInEx.Configuration;
 using System.Collections.Generic;
 using UnityEngine;
 
-[BepInPlugin("CelestialTint", "Celestial Tint", "1.5.0")]
+[BepInPlugin("CelestialTint", "Celestial Tint", "1.5.1")]
 public class CelestialTint : BaseUnityPlugin
 {
     internal static CTConfig ModConfig;
