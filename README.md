@@ -1,5 +1,5 @@
 ### ⚠️ Platform notice ⚠️
-This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/celestial-tint). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
+This mod is available on a [different platform](https://www.curseforge.com/lethal-company/mods/aquatis). This platform will get priority over Thunderstore. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported, but wont be a priority.
 
 # Celestial Tint 🪐
 This mod adds a beautiful view when in orbit. Multiple different planetary views and custom moon support.
@@ -20,7 +20,10 @@ Just drag and drop all the files into your mods folder inside Lethal Company.
 For modders: [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint) (previews included)
   
 ***
-_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Celestial-Tint/issues) or join the [discord server](https://discord.gg/lcmod) and search for **sfDesat** or click [here](https://discordapp.com/channels/1168655651455639582/1198736199297286196)._
+_If you want to give feedback or have questions, here are some options:  
+**[sfDesat discord](https://discord.gg/UVJx7F8mJY)**  
+[Github page](https://github.com/sfDesat/Celestial-Tint/issues)  
+[Official Lethal Company discord](https://discord.gg/lcmod) in this [channel](https://discordapp.com/channels/1168655651455639582/1198736199297286196)._  
 
 **Want to support me? [Buy me a coffee ❤️](https://ko-fi.com/sfdesat)**
 ***
