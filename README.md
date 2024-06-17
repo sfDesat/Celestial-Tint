@@ -1,21 +1,23 @@
-# Celestial Tint
-This mod adds a beautiful view when in orbit.  
-### Configuration:
-- **[VanillaMode]** Shows the vanilla planets outside, with added lighting.
-- **[PlanetTagMappings]** Allows you to set custom tags per planet. [previews](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint)
-- **[ShipDoorAccess]** Allow the door to be opened while in orbit.
-- **[DisplayShipParts]** Display missing ship parts in orbit.
+# Celestial Tint 🚀
+This mod adds a beautiful view when in orbit. Multiple different planetary views and custom moon support.
 
-### Preview:
+**Preview:**
 ![Screenshot_1](https://raw.githubusercontent.com/sfDesat/Celestial-Tint/main/Screenshots/Rocky.png "Rocky")
   
-### Relevant notes:  
-- The planets are not completely lore accurate. This is not achievable right now.
-- **[For Modders]** [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint) (Previews included)
-# 
+### Manual Installation:
+Make sure to have BepInEx installed in your Lethal Company folder.
+Just drag and drop all the files into your mods folder inside Lethal Company.
   
-_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Celestial-Tint/issues) or join the [discord server](https://discord.gg/lcmod) and search for `sfDesat`._
+### Configuration options:
+- **[VanillaMode]** Shows the vanilla planets outside, with added lighting.
+- **[PlanetTagMappings]** Allows you to set custom tags per planet. [previews](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint#preview-images)
+- **[ShipDoorAccess]** Allow the door to be opened while in orbit.
+- **[DisplayShipParts]** Display missing ship parts in orbit.
+  
+For modders: [How to add support for Celestial Tint](https://github.com/sfDesat/Celestial-Tint/wiki/Adding-support-for-Celestial-Tint) (previews included)
+  
+***
+_If you want to give feedback, you can use my [github page](https://github.com/sfDesat/Celestial-Tint/issues) or join the [discord server](https://discord.gg/lcmod) and search for **sfDesat** or click [here](https://discordapp.com/channels/1168655651455639582/1198736199297286196)._
 
-**Check out my planets [here](https://thunderstore.io/c/lethal-company/p/sfDesat/) or download my [modpacks](https://thunderstore.io/c/lethal-company/p/sfDesat/?section=modpacks).**
-#
-### Want to support me? [Buy me a coffee ❤️](https://www.buymeacoffee.com/sfdesat).
+**Want to support me? [Buy me a coffee ❤️](https://ko-fi.com/sfdesat)**
+***
