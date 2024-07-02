@@ -1,12 +1,13 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using BepInEx;
 using BepInEx.Configuration;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-[BepInPlugin("CelestialTint", "Celestial Tint", "1.5.1")]
-public class CelestialTint : BaseUnityPlugin
+[BepInPlugin("CelestialTint", "Celestial Tint", "1.5.2")]
+public class CelestialTintStart : BaseUnityPlugin
 {
     internal static CTConfig ModConfig;
 
@@ -22,12 +23,42 @@ public class CelestialTint : BaseUnityPlugin
 
         Debug.Log("[Celestial Tint] Loading complete");
 
-        // Load config
         ModConfig = new CTConfig(Config);
 
-        if (CelestialTint.ModConfig.VanillaMode.Value) VanillaMode.Initialize();
-        if (!CelestialTint.ModConfig.VanillaMode.Value) CelestialTintLoader.Initialize();
-        if (CelestialTint.ModConfig.DisplayShipParts.Value) ShipPartsLoader.Initialize();
-        if (CelestialTint.ModConfig.ShipDoorAccess.Value) ShipDoorLoader.Initialize();
+        if (CelestialTintStart.ModConfig.VanillaMode.Value) VanillaMode.Initialize();
+        if (!CelestialTintStart.ModConfig.VanillaMode.Value) CelestialTintLoader.Initialize();
+        if (CelestialTintStart.ModConfig.DisplayShipParts.Value) ShipPartsLoader.Initialize();
+        if (CelestialTintStart.ModConfig.ShipDoorAccess.Value) ShipDoorLoader.Initialize();
+    }
+
+    public static bool CheckSceneState()
+    {
+        bool isInOrbit = SceneManager.sceneCount == 1 && SceneManager.GetActiveScene().name == "SampleSceneRelay";
+        if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint] " + (isInOrbit ? "In Orbit" : "Out Orbit"));
+        
+        return isInOrbit;
+    }
+
+    public static async Task<bool> DelayedCheckSceneStateAsync()
+    {
+        await Task.Yield(); // Wait for the next frame
+        return CheckSceneState();
+    }
+
+    public class CoroutineHandler : MonoBehaviour
+    {
+        private static CoroutineHandler _instance;
+        public static CoroutineHandler Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new GameObject("CoroutineHandler").AddComponent<CoroutineHandler>();
+                    DontDestroyOnLoad(_instance.gameObject);
+                }
+                return _instance;
+            }
+        }
     }
 }
