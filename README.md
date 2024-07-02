@@ -1,5 +1,5 @@
 ### ⚠️ Platform notice ⚠️
-This mod is now available on a [different platform](https://www.curseforge.com/lethal-company/mods/celestial-tint). This new platform will get update priority and receive betas. This means that the Thunderstore version of this mod will receive less frequent updates. Thunderstore will remain supported.
+This mod is now also available on a [different platform](https://www.curseforge.com/lethal-company/mods/celestial-tint). This new platform will receive beta updates. Thunderstore will remain supported.
 
 # Celestial Tint 🪐
 This mod adds a beautiful view when in orbit. Multiple different planetary views and custom moon support.
