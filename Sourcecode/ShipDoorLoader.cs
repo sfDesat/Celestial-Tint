@@ -9,7 +9,7 @@ public static class ShipDoorLoader
         harmony.PatchAll(typeof(CTDoorHangarShipDoor));
         harmony.PatchAll(typeof(CTDoorStartOfRound));
 
-        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[CT Ship Door Loader] Ship doors opened");
+        if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log("[CT ShipDoorLoader] Ship doors opened");
     }
 
 
