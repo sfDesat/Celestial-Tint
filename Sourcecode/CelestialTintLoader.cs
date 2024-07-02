@@ -11,6 +11,8 @@ using UnityEngine.SceneManagement;
 
 public static class CelestialTintLoader
 {
+    private static bool hasLoadedAssetbundle = false;
+
     private static List<GameObject> instantiatedPrefabs = new List<GameObject>();
     private static GameObject prefab;
 
@@ -64,7 +66,7 @@ public static class CelestialTintLoader
 
     public static void Initialize()
     {
-        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Loader initialized");
+        if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Loader initialized");
 
         // Initialize Harmony
         Harmony harmony = new Harmony("com.celestialtint.mod");
@@ -87,10 +89,11 @@ public static class CelestialTintLoader
         if (File.Exists(bundlePath))
         {
             assetBundle = AssetBundle.LoadFromFile(bundlePath);
+            hasLoadedAssetbundle = true;
 
             if (assetBundle != null)
             {
-                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {bundlePath}");
+                if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {bundlePath}");
             }
             else
             {
@@ -108,7 +111,7 @@ public static class CelestialTintLoader
 
             if (SmallAssetBundle != null)
             {
-                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {SmallBundlePath}");
+                if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] AssetBundle loaded successfully from path: {SmallBundlePath}");
             }
             else
             {
@@ -121,29 +124,20 @@ public static class CelestialTintLoader
         }
     }
 
-    private static void CheckSceneState()
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (SceneManager.sceneCount == 1 && SceneManager.GetActiveScene().name == "SampleSceneRelay")
-        {
-            LoadStarmapContainerPrefab();
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Activating Starmap");
-        }
-        else if (SceneManager.GetActiveScene().name == "SampleSceneRelay")
-        {
-            UnloadStarmapContainerPrefab();
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Deactivating Starmap");
-        }
+        bool isInOrbit = CelestialTintStart.CheckSceneState();
+
+        if (isInOrbit) LoadStarmapContainerPrefab();
+        else UnloadStarmapContainerPrefab();
     }
 
-    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode) { CheckSceneState(); }
-
-    private static void OnSceneUnloaded(Scene scene) { CoroutineHandlerCTL.Instance.StartCoroutine(DelayedCheckSceneState()); }
-
-    private static IEnumerator DelayedCheckSceneState()
+    private static async void OnSceneUnloaded(Scene scene)
     {
-        // Wait for the current frame to end before checking the scene state
-        yield return new WaitForEndOfFrame();
-        CheckSceneState();
+        bool isInOrbit = await CelestialTintStart.DelayedCheckSceneStateAsync();
+
+        if (isInOrbit) LoadStarmapContainerPrefab();
+        else UnloadStarmapContainerPrefab();
     }
 
     private static void LoadStarmapContainerPrefab()
@@ -156,7 +150,7 @@ public static class CelestialTintLoader
                 GameObject instantiatedPrefab = GameObject.Instantiate(prefab, prefab.transform.position, Quaternion.identity);
                 instantiatedPrefabs.Add(instantiatedPrefab);
 
-                if (CelestialTint.ModConfig.DebugLogging.Value)
+                if (CelestialTintStart.ModConfig.DebugLogging.Value)
                     Debug.Log("[Celestial Tint Loader] Instantiated StarmapContainer prefab.");
             }
             else
@@ -178,7 +172,7 @@ public static class CelestialTintLoader
         }
         instantiatedPrefabs.Clear();
 
-        if (CelestialTint.ModConfig.DebugLogging.Value) 
+        if (CelestialTintStart.ModConfig.DebugLogging.Value) 
             Debug.Log("[Celestial Tint Loader] All instantiated StarmapContainer prefabs have been destroyed.");
     }
 
@@ -193,14 +187,14 @@ public static class CelestialTintLoader
                 bool foundCompatiblePrefab = false;
 
                 // Check if there are custom mappings in the config file
-                if (!string.IsNullOrEmpty(CelestialTint.ModConfig.PlanetTagMappings.Value))
+                if (!string.IsNullOrEmpty(CelestialTintStart.ModConfig.PlanetTagMappings.Value))
                 {
-                    foreach (string mapping in CelestialTint.ModConfig.PlanetTagMappings.Value.Split(','))
+                    foreach (string mapping in CelestialTintStart.ModConfig.PlanetTagMappings.Value.Split(','))
                     {
                         string[] parts = mapping.Trim().Split('@'); // Trim leading and trailing whitespace
                         if (parts.Length != 2)
                         {
-                            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
+                            if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
                             continue;
                         }
 
@@ -217,7 +211,7 @@ public static class CelestialTintLoader
                             {
                                 LoadAndSetPrefab(selectableLevel, prefabName);
                                 foundCompatiblePrefab = true;
-                                if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName} based on custom mapping.");
+                                if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName} based on custom mapping.");
                                 break;
                             }
                         }
@@ -237,7 +231,7 @@ public static class CelestialTintLoader
                     else
                     {
                         LoadAndSetPrefab(selectableLevel, "Prefab_Wasteland");
-                        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
+                        if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
                     }
                 }
             }
@@ -247,7 +241,7 @@ public static class CelestialTintLoader
         }
         else
         {
-            Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
+            if (hasLoadedAssetbundle == false) Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
         }
     }
 
@@ -262,14 +256,14 @@ public static class CelestialTintLoader
                 bool foundCompatiblePrefab = false;
 
                 // Checking config file entries
-                if (!string.IsNullOrEmpty(CelestialTint.ModConfig.PlanetTagMappings.Value))
+                if (!string.IsNullOrEmpty(CelestialTintStart.ModConfig.PlanetTagMappings.Value))
                 {
-                    foreach (string mapping in CelestialTint.ModConfig.PlanetTagMappings.Value.Split(','))
+                    foreach (string mapping in CelestialTintStart.ModConfig.PlanetTagMappings.Value.Split(','))
                     {
                         string[] parts = mapping.Trim().Split('@'); // Trim leading and trailing whitespace
                         if (parts.Length != 2)
                         {
-                            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
+                            if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] Invalid mapping format: {mapping}. Skipping.");
                             continue;
                         }
 
@@ -315,7 +309,7 @@ public static class CelestialTintLoader
                     else
                     {
                         LoadAndSetPrefab(selectableLevel, "Prefab_Wasteland");
-                        if (CelestialTint.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
+                        if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.LogWarning($"[Celestial Tint Loader] No fallback prefab found for level {selectableLevel.PlanetName}. Using default Prefab_Wasteland.");
                     }
                 }
             }
@@ -325,7 +319,7 @@ public static class CelestialTintLoader
         }
         else
         {
-            Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
+            if (hasLoadedAssetbundle == false) Debug.LogError($"[Celestial Tint Loader] AssetBundle is not loaded. Unable to replace prefabs.");
         }
     }
 
@@ -337,7 +331,7 @@ public static class CelestialTintLoader
         if (newPrefab != null)
         {
             selectableLevel.planetPrefab = newPrefab;
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName}");
+            if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log($"[Celestial Tint Loader] Replaced planetPrefab for {selectableLevel.PlanetName} with {prefabName}");
         }
         else
         {
@@ -358,37 +352,20 @@ public static class CelestialTintLoader
         if (isOtherModLoaded)
         {
             // The other mod is loaded, do something
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Detected LethalLevelLoader");
+            if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Detected LethalLevelLoader");
 
             ReplaceCurrentPlanetPrefabs();
         }
         else
         {
             // The other mod is not loaded
-            if (CelestialTint.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Did not detect LethalLevelLoader");
+            if (CelestialTintStart.ModConfig.DebugLogging.Value) Debug.Log("[Celestial Tint Loader] Did not detect LethalLevelLoader");
 
             ReplaceVanillaPlanetPrefabs();
         }
 
         LoadStarmapContainerPrefab();
 
-        assetBundle.Unload(false);
-    }
-
-    public class CoroutineHandlerCTL : MonoBehaviour
-    {
-        private static CoroutineHandlerCTL _instance;
-        public static CoroutineHandlerCTL Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new GameObject("CoroutineHandlerCTL").AddComponent<CoroutineHandlerCTL>();
-                    DontDestroyOnLoad(_instance.gameObject);
-                }
-                return _instance;
-            }
-        }
+        if (assetBundle != null) assetBundle.Unload(false);
     }
 }
